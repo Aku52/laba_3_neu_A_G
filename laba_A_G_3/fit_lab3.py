@@ -8,14 +8,15 @@ import numpy as np
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
 
-def random_choice ():
+def random_choice():
     # Взять случайную подвыборку
     indices = np.random.choice(len(x_train), 10000, replace=False)
     x_train_small, y_train_small = x_train[indices], y_train[indices]
     print(f"Полная выборка: {len(x_train)} изображений")
     print(f"Случайная выборка: {len(x_train_small)} изображений")
+    return x_train_small, y_train_small
 
-def madel_create():
+def model_create():
     # модель для сравнения
     model = models.Sequential([
         layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
@@ -60,7 +61,7 @@ def test_random(model,x_train_small,y_train_small):
         validation_split=0.1, 
         verbose=1)
 
-def evaluation_full(model):
+def evaluation_random(model):
     # Оценка рандомной
     test_loss_small, test_acc_small = model.evaluate(x_test, y_test, verbose=0)
     print(f"Точность (случайная): {test_acc_small:.4f}")
@@ -68,6 +69,16 @@ def evaluation_full(model):
 
 
 def main():
-    if __name__ == "__main__":
-        
-        main()
+    # Модель для полной выборки
+    model_full = model_create()
+    compile_func(model_full)
+    test_full(model_full)
+    evaluation_full(model_full)
+
+    # Модель для случайной выборки
+    x_train_small, y_train_small = random_choice()
+    model_random = model_create()
+    compile_func(model_random)
+    test_random(model_random, x_train_small, y_train_small)
+    evaluation_random(model_random)
+
