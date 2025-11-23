@@ -6,12 +6,11 @@ import os
 
 # Загрузка CIFAR10
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-# Нормализация
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
 
 def random_choice():
-    # Взять случайную подвыборку
+    #Cлучайнуя подвыборка
     indices = np.random.choice(len(x_train), 10000, replace=False)
     x_train_small, y_train_small = x_train[indices], y_train[indices]
     print(f"Полная выборка: {len(x_train)} изображений")
@@ -19,7 +18,7 @@ def random_choice():
     return x_train_small, y_train_small
 
 def model_create():
-    # модель для сравнения
+    # Модель для сравнения
     model = models.Sequential([
         layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
         layers.MaxPooling2D((2,2)),
@@ -28,19 +27,18 @@ def model_create():
         layers.Flatten(),
         layers.Dense(64, activation='relu'),
         layers.Dense(10, activation='softmax')  # 10 выходов для 10 классов
-
-    ])
+        ])
     return model
 
 def compile_func(model):
+    # Компиляция модели
     model.compile(
         optimizer='adam',
         loss='sparse_categorical_crossentropy',  
-        metrics=['accuracy']
-    )
+        metrics=['accuracy'])
 
 def test_full(model):
-    # Тестируем на полной выборке (меньше эпох для скорости)
+    # Тестируем на полной выборке 
     model.fit(
         x_train, y_train, 
         epochs=6, 
@@ -68,13 +66,13 @@ def evaluation_random(model):
     test_loss_small, test_acc_small = model.evaluate(x_test, y_test, verbose=0)
     return test_loss_small,test_acc_small
 
-# Задание со звездочкой
+# Задание со звездочкой (с обработкой исключений)
 def test_custom_image(model, model_name=""):
     try:
-        # Путь к изображению
+        # "Достаем" изображение
         image_path = os.path.join("laba_A_G_3", "собака.jpg")
         
-        # Загрузка и предобработка изображения
+        # Открытие и предобработка изображения
         img = Image.open(image_path)
         img = img.resize((32, 32))
         img_array = np.array(img) / 255.0
@@ -107,7 +105,6 @@ def main():
     test_full(model_full)
     loss_full, acc_full = evaluation_full(model_full)
     print(f"Точность (полная): {acc_full:.4f}")
-
 
     # Модель для случайной выборки
     x_train_small, y_train_small = random_choice()
