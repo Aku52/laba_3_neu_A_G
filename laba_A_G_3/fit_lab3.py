@@ -48,8 +48,7 @@ def test_full(model):
 def evaluation_full(model):
     # Оценка полной точности
     test_loss_full, test_acc_full = model.evaluate(x_test, y_test, verbose=0)
-    print(f"Точность (полная): {test_acc_full:.4f}")
-    return test_loss_full
+    return test_loss_full,test_acc_full
 
 def test_random(model,x_train_small,y_train_small):
     # Тестируем на рандомной выборке
@@ -64,8 +63,7 @@ def test_random(model,x_train_small,y_train_small):
 def evaluation_random(model):
     # Оценка рандомной
     test_loss_small, test_acc_small = model.evaluate(x_test, y_test, verbose=0)
-    print(f"Точность (случайная): {test_acc_small:.4f}")
-    return test_loss_small
+    return test_loss_small,test_acc_small
 
 
 def main():
@@ -73,12 +71,17 @@ def main():
     model_full = model_create()
     compile_func(model_full)
     test_full(model_full)
-    evaluation_full(model_full)
+    loss_full, acc_full = evaluation_full(model_full)
+    print(f"Точность (полная): {acc_full:.4f}")
+
 
     # Модель для случайной выборки
     x_train_small, y_train_small = random_choice()
     model_random = model_create()
     compile_func(model_random)
     test_random(model_random, x_train_small, y_train_small)
-    evaluation_random(model_random)
+    loss_small, acc_small = evaluation_random(model_random)
+    print(f"Точность (случайная): {acc_small:.4f}")
 
+if __name__ == "__main__":
+    main()
